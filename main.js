@@ -12,6 +12,7 @@ function main() {
     alert('Unable to initialize WebGL. Your browser or machine may not support it.');
     return;
   }
+  
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   const alignment = 1;
@@ -20,13 +21,16 @@ function main() {
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
   const program = createProgram(gl, vertexShader, fragmentShader);
-  
-  setPositions(program);
-  const resolutionUniformLocation = gl.getUniformLocation(program, 'resolution');
-  setTexture(program);
-  
   gl.useProgram(program);
 
+  setPositions(program);
+  const resolutionUniformLocation = gl.getUniformLocation(program, 'resolution');
+  try {
+    setTexture(program);
+  } catch (e) {
+    // Do nothing
+  }
+  
   const draw = () => drawScene(resolutionUniformLocation);
   window.onresize = draw;
   draw()
@@ -91,7 +95,7 @@ function setTexture(program) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   
-  const textureLocation = gl.getUniformLocation(program, 'texture');
+  const textureLocation = gl.getUniformLocation(program, 'hues');
   // Tell the shader to use texture unit 0 for u_texture
   gl.uniform1i(textureLocation, 0);
 }

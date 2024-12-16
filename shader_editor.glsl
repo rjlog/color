@@ -1,5 +1,8 @@
+#version 300 es
 // mediump is a good default
 precision mediump float;
+
+out vec4 COLOR;
 
 const float RADIUS = 0.5;
 const float TAU = 6.283185307179;
@@ -144,6 +147,6 @@ void main() {
     if (distance_center <= RADIUS)
     {
         float alpha = clamp((RADIUS - distance_center) * resolution.y * 0.5, 0.0, 1.0);
-        gl_FragColor = vec4(get_color(uv, distance_center), alpha);
+        COLOR = vec4(get_color(uv, distance_center), alpha);
     }
 }
