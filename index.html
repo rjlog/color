@@ -10,8 +10,8 @@
           integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
           crossorigin="anonymous"
           defer></script>
-  <script id="vertex-shader-2d" type="notjs">
-    attribute vec2 position;
+  <script id="vertex-shader-2d" type="notjs">#version 300 es
+    in vec2 position;
 
     void main() {
       gl_Position = vec4(position * 2.0 - 1.0, 0, 1.0);
@@ -19,14 +19,14 @@
 
   </script>
 
-  <script id="fragment-shader-2d" type="notjs">
-
+  <script id="fragment-shader-2d" type="notjs">#version 300 es
     // mediump is a good default
     precision mediump float;
 
+    out vec4 COLOR;
     const float TAU = 6.28318530717958647692;
     uniform vec2 resolution;
-    uniform sampler2D texture;
+    uniform sampler2D hues;
 
     vec3 hsv_to_rgb(float hue, float saturation, float value) {
       float chroma = saturation * value;
@@ -38,15 +38,14 @@
     }
 
     void main() {
-      vec2 uv = vec2(1.0,-1.0) * (0.5 - gl_FragCoord.xy / resolution);
-      float distance_center = length(uv);
-      float radius = 0.5;
-      if (distance_center <= radius)
-	  {
-        float alpha = clamp((radius - distance_center) * resolution.y * 0.5, 0.0, 1.0);
-        float saturation = -0.553 * cos(0.8 * TAU * distance_center) + 0.553;
-        gl_FragColor = vec4(hsv_to_rgb(atan(uv.y, uv.x) / TAU + 0.5, saturation, 1.0), alpha);
+      vec2 uv = (gl_FragCoord.xy / resolution);
+      float c = texture(hues, vec2(0.5, 0.0)).r / 100.0;
+      if (uv.x > 0.66) {
+        c = 0.8;
+      } else if (uv.x > 0.33) {
+        c = 0.2;
       }
+      COLOR = vec4(c, c, c, 1.0);
     }
   </script>
 
