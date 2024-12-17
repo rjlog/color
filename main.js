@@ -1,7 +1,8 @@
-const canvas = document.querySelector('#gl-canvas');
+const glCanvas = document.createElement('canvas');
+const canvas = document.querySelector('#copy');
 const canvasHeight = canvas.clientHeight;
 const canvasWidth = canvas.clientWidth;
-const gl = canvas.getContext('webgl2', { antialias: false });
+const gl = glCanvas.getContext('webgl2', { antialias: false });
 const vertexShaderSource = `#version 300 es
 in vec2 position;
 void main() {
@@ -181,7 +182,7 @@ function main() {
   setPositions(program);
   const resolutionUniformLocation = gl.getUniformLocation(program, 'resolution');
   try {
-    setTexture(program);
+    setHues(program);
   } catch (e) {
     // Do nothing
   }
@@ -192,20 +193,15 @@ function main() {
 }
 
 function drawScene(resolutionUniformLocation) {
-  canvas.width = Math.floor(canvasWidth * window.devicePixelRatio);
-  canvas.height = Math.floor(canvasHeight * window.devicePixelRatio);
+  glCanvas.width = Math.floor(canvasWidth * window.devicePixelRatio);
+  glCanvas.height = glCanvas.width.valueOf();
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-  
-  gl.uniform2f(resolutionUniformLocation, canvas.width, canvas.height);
-  
+  gl.uniform2f(resolutionUniformLocation, glCanvas.width, glCanvas.height);
   const primitiveType = gl.TRIANGLES;
   const offset = 0;
   const count = 6;
   gl.drawArrays(primitiveType, offset, count);
-
-  // Scale down to original size
-  canvas.style.width = canvasWidth + 'px';
-  canvas.style.height = canvasHeight + 'px';
+  toImage(glCanvas.width, glCanvas.height);
 }
 
 function setPositions(program) {
@@ -231,9 +227,24 @@ function setPositions(program) {
   gl.enableVertexAttribArray(positionLocation);
 }
 
-function setTexture(program) {
+function toImage(width, height) {
+  const pixels = new Uint8Array(width * height * 4); // 4 bytes per pixel (RGBA)
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  const imageData = new ImageData(new Uint8ClampedArray(pixels), width, height);
+  ctx.putImageData(imageData, 0, 0);
+  // gl origin is bottom left
+  ctx.scale(1, -1);
+  ctx.drawImage(canvas, 0, height * -1);
+  // rescale
+  canvas.style.width = canvasWidth + 'px';
+  canvas.style.height = canvasHeight + 'px';
+}
+
+function setHues(program) {
   gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
-  // fill texture with 3x1 pixels
   const level = 0;
   const internalFormat = gl.R32F;
   const width = 1000;
