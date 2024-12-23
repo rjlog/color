@@ -1,3 +1,7 @@
+/**
+ * TODO: keyboard support for accessibility
+ */
+
 import {colorWheelCanvas, canvasSize, radius} from "./color-wheel.js";
 
 const cursor = document.querySelector("#cursor");
@@ -6,8 +10,9 @@ const centerY = canvasSize / 2;
 
 main()
 function main() {
+    // Animation
     const computedStyle = window.getComputedStyle(cursor);
-    const mousedownSize = 20 + 'px'
+    const mousedownSize = 15 + 'px'
     
     const keyframes = [
         { width: computedStyle.width, height: computedStyle.height},
@@ -26,35 +31,52 @@ function main() {
         direction: 'reverse'
     };
 
+    // Mouse
     let dragging = false;
-    
     onmouseup = () => {
         if (dragging) {
             dragging = false;
             cursor.animate(keyframes, optionsReverse);
         }
     }
-
-    document.body.onblur = (event) => {
-        if (dragging) {onmouseup(event)}
-    }
+    document.body.onblur = onmouseup;
     
     colorWheelCanvas.onmousedown = (event) => {
         cursor.animate(keyframes, optionsForward);
         dragging = true;
-        move(event);
+        moveWithMouse(event);
     }
-    
     onmousemove = (event) => {
         if (dragging) {
-            move(event);
+            moveWithMouse(event);
         }
     }
+    
+    //Touchscreen
+    colorWheelCanvas.ontouchstart = (event) => {
+        cursor.animate(keyframes, optionsForward);
+        dragging = true;
+        moveWithTouch(event.touches[0]);
+    }
+    ontouchmove = (event) => {
+        if (dragging) {
+            moveWithTouch(event.touches[0]);
+        }
+    }
+    ontouchend = onmouseup;
 }
 
-function move(event) {
-    let x = event.clientX - colorWheelCanvas.getBoundingClientRect().left;
-    let y = event.clientY - colorWheelCanvas.getBoundingClientRect().top;
+function moveWithMouse(event) {
+    move(event.clientX, event.clientY);
+}
+
+function moveWithTouch(event) {
+    move(event.clientX, event.clientY);
+}
+
+function move(clientX, clientY) {
+    let x = clientX - colorWheelCanvas.getBoundingClientRect().left;
+    let y = clientY - colorWheelCanvas.getBoundingClientRect().top;
     const radiusWheel = radius * canvasSize;
     const distance = Math.hypot(centerX - x, centerY - y);
     const dx = centerX - x;

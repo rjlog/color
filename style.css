@@ -1,6 +1,22 @@
+body {
+    background: #365c62;
+}
+
+#color-picker-container {
+    width: 250px;
+    aspect-ratio: 1 / 1;
+    position: relative;
+}
+
+#color-wheel {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    touch-action: none;
+}
+
 #cursor {
-    width: 10px;
-    height: 10px;
+    width: 7px;
+    aspect-ratio: 1 / 1;
     border: 1px solid white;
     outline: 1px solid black;
     position: absolute;
@@ -10,20 +26,4 @@
     border-radius: 100%;
     transform: translate(-50%, -50%);
     animation-duration: 4s;
-}
-
-#color-wheel {
-    width: 100%;
-    height: 100%;
-}
-
-#color-picker-container {
-    width: 250px;
-    height: 250px;
-    position: relative;
-}
-
-body {
-    background: #365c62;
-
 }
