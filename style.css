@@ -1,8 +1,8 @@
 body {
-    background: #365c62;
+    background: #539EC1;
 }
 
-#color-picker-container {
+#color-wheel-container {
     width: 250px;
     aspect-ratio: 1 / 1;
     position: relative;
@@ -26,4 +26,28 @@ body {
     border-radius: 100%;
     transform: translate(-50%, -50%);
     animation-duration: 4s;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
+}
+
+.sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.slider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input[type="range"] {
+    width: 150px;
 }

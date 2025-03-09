@@ -1,8 +1,14 @@
 /**
  * TODO: keyboard support for accessibility
+ * TODO: hsv and rgb slider values -> rgb values:
+ * 
+ * function to get the hue and saturation from rgb values to update the cursor
+ *
+ * rgb point -> oklab -> okhue -> 1D lookup table -> normalised hue
+ *
  */
 
-import {colorWheelCanvas, canvasSize, radius} from "./color-wheel.js";
+import {colorWheelCanvas, canvasSize, radius, getColor} from "./color-wheel.js";
 
 const cursor = document.querySelector("#cursor");
 const centerX = canvasSize / 2;
@@ -51,19 +57,20 @@ function main() {
             moveWithMouse(event);
         }
     }
-    
-    //Touchscreen
-    colorWheelCanvas.ontouchstart = (event) => {
-        cursor.animate(keyframes, optionsForward);
-        dragging = true;
-        moveWithTouch(event.touches[0]);
-    }
-    ontouchmove = (event) => {
-        if (dragging) {
+    if ("ontouchstart" in window) {
+        //Touchscreen
+        colorWheelCanvas.ontouchstart = (event) => {
+            cursor.animate(keyframes, optionsForward);
+            dragging = true;
             moveWithTouch(event.touches[0]);
         }
+        ontouchmove = (event) => {
+            if (dragging) {
+                moveWithTouch(event.touches[0]);
+            }
+        }
+        ontouchend = onmouseup;
     }
-    ontouchend = onmouseup;
 }
 
 function moveWithMouse(event) {
