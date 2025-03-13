@@ -8,9 +8,9 @@
  *
  */
 
-import {colorWheelCanvas, canvasSize, radius, getColor} from "./color-wheel.js";
+import {colorWheelCanvas, canvasSize, radius} from "./color-wheel.js";
 
-const cursor = document.querySelector("#cursor");
+export const cursor = document.querySelector("#cursor");
 const centerX = canvasSize / 2;
 const centerY = canvasSize / 2;
 
@@ -92,6 +92,8 @@ function move(clientX, clientY) {
         x = centerX - dx / distance * radiusWheel;
         y = centerY - dy / distance * radiusWheel;
     }
+    console.log(x)
     cursor.style.left = x + 'px';
     cursor.style.top = y + 'px';
 }
+

@@ -134,8 +134,6 @@ vec3 get_rgb(float hue, float saturation, float value) {
     float k = 1.0 - S_0 / S_max;
     float L_v = 1.0 - saturation * S_0 / (S_0 + T_max - T_max * k * saturation);
     float C_v = saturation * T_max * S_0 / (S_0 + T_max - T_max * k * saturation);
-    // float length = sqrt(C_cusp * C_cusp + (1.0 - L_cusp) * (1.0 - L_cusp));
-	// saturation = 1.0 - pow((1.0 - saturation), 0.33/length);
     // L_v = saturation * (L_cusp - 1.0) + 1.0;
     // C_v = saturation * C_cusp;
 

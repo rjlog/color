@@ -24,6 +24,8 @@ Color harmonies shown directly on the color wheel
           defer></script> <!--matrix library-->
   <script src="color-wheel.js" type="module"></script>
   <script src="cursor.js" type="module"></script>
+  <script src="slider.js" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.27.3/full/pyodide.js"></script>
   <div class="container">
     <div id="color-wheel-container">
       <canvas id="color-wheel"></canvas>
@@ -32,16 +34,16 @@ Color harmonies shown directly on the color wheel
 
     <div class="sliders">
       <div class="slider">
-        <label for="slider1">Slider 1:</label>
-        <input type="range" id="slider1" min="0" max="100" value="100">
+        <label for="slider-red">r</label>
+        <input type="range" id="slider-red" min="0" max="255" value="255">
       </div>
       <div class="slider">
-        <label for="slider2">Slider 2:</label>
-        <input type="range" id="slider2" min="0" max="100" value="100">
+        <label for="slider-green">g</label>
+        <input type="range" id="slider-green" min="0" max="255" value="255">
       </div>
       <div class="slider">
-        <label for="slider3">Slider 3:</label>
-        <input type="range" id="slider3" min="0" max="100" value="100">
+        <label for="slider-blue">b</label>
+        <input type="range" id="slider-blue" min="0" max="255" value="255">
       </div>
     </div>
   </div>
