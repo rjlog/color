@@ -200,5 +200,5 @@ label {
 .coef-table td {
     padding: 12px;
     border-bottom: 1px solid #eee;
-    font-family: 'Courier New', Courier, monospace; /* Monospace for numbers */
+    font-family: 'Jetbrain Mono', monospace; /* Monospace for numbers */
 }
