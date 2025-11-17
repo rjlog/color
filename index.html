@@ -18,6 +18,7 @@ Color harmonies shown directly on the color wheel
 </head>
 
 <body>
+<a href="https://github.com/rjlog/uniform-color-wheel" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
   <div id="hex-container">
     <h1 id="hex-display">#ffffff</h1>
   </div>
@@ -66,6 +67,105 @@ Color harmonies shown directly on the color wheel
       </div>
     </div>
   </div>
+  <div id="content-text">
+    <h3>What is this?</h3>
+    <p>
+      I designed a color picker to see if I could improve on existing color pickers. It is for now more meant as a showcase; it does not have extensive features, and it is not without its flaws.
+    </p>
+
+    <h3>Motivation</h3>
+    <p>
+      HSV is the most common color model used for color pickers. It utilizes three parameters: Hue, Saturation, and Value (or Brightness). However, HSV relies on a simplistic design that fails to account for human color perception. To improve this, a color picker is designed using a perceptually uniform color space.
+    </p>
+    <p>
+      Oklab is a perceptually uniform color space widely used for its simplicity in converting to and from sRGB. Its creator, Björn Ottoson, adapted this space to improve upon HSV, resulting in a model dubbed “Okhsv”.
+    </p>
+    <p>
+      While Okhsv has advantages over standard HSV, it has a flaw: it does not vary evenly when changing parameters. Because it inherits hue directly from Oklab, lightness and chroma can change rapidly when comparing adjacent hues at constant saturation and value.
+    </p>
+    <p>
+      To address this, the hues in this color picker have been redistributed. While maintaining the saturation and value calculations of Okhsv, the hue spacing has been adjusted so that color varies evenly. This results in a functional and visually pleasing color wheel.
+    </p>
+    <p>
+      To calculate these new positions, I utilized Iapbp, a newer color system that offers slightly more accurate color difference calculations than Oklab. The positions were optimized using a constant saturation of 70% and a constant value of 100%, ensuring good perceptual uniformity across both high and low saturation levels.
+    </p>
+
+
+    <h3>RGB Calculation Model</h3>
+    <p>
+      The equations for the resulting RGB values were fitted to these new hue positions (<i>t</i>) for faster calculation and are provided below.
+    </p>
+
+    <div class="formula-box">
+      RGB<sub>val</sub> = clamp(
+      (max(0, <span style="display:inline-block; vertical-align:middle; text-align:center;">
+            <span style="display:block; border-bottom:1px solid #333;" class="variable">a - <span class="variable">t</span></span>
+            <span style="display:block;" class="variable">b</span>
+        </span>) )<sup><span class="variable">c</span></sup>, 0, 1
+      )
+    </div>
+
+    <p>Where <i>a</i>, <i>b</i>, and <i>c</i> depend on the channel and hue position <i>(t)</i>:</p>
+
+    <table class="coef-table">
+      <thead>
+      <tr>
+        <th>Channel</th>
+        <th>Condition (t)</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Red</td>
+        <td>&lt; 0.5</td>
+        <td>0.28805</td>
+        <td>0.09890</td>
+        <td>0.58492</td>
+      </tr>
+      <tr>
+        <td>Red</td>
+        <td>&ge; 0.5</td>
+        <td>0.62215</td>
+        <td>-0.20310</td>
+        <td>0.73273</td>
+      </tr>
+
+      <tr>
+        <td>Green</td>
+        <td>&lt; 0.3</td>
+        <td>0.00000</td>
+        <td>-0.18915</td>
+        <td>0.65071</td>
+      </tr>
+      <tr>
+        <td>Green</td>
+        <td>&ge; 0.3</td>
+        <td>0.62215</td>
+        <td>0.21030</td>
+        <td>0.66797</td>
+      </tr>
+
+      <tr>
+        <td>Blue</td>
+        <td>&lt; 0.5</td>
+        <td>0.28805</td>
+        <td>-0.12380</td>
+        <td>0.57563</td>
+      </tr>
+      <tr>
+        <td>Blue</td>
+        <td>&ge; 0.5</td>
+        <td>1.00000</td>
+        <td>0.17475</td>
+        <td>0.65491</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
 
 
   <script src="https://greggman.github.io/webgl-lint/webgl-lint.js"></script>

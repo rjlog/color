@@ -46,9 +46,8 @@ function updateHex() {
     else
         hexContainer.style.background = "white"
     clearTimeout(hashUpdateTimeout);
-    hashUpdateTimeout = setTimeout(() => {
-        location.hash = hex;
-    }, 600);
+    hashUpdateTimeout = setTimeout(() => location.hash = hex,
+        600);
 }
 
 initSliders(handleRgbInputChange, handleValueInputChange)
